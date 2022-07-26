@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using CRISP.Backend.Challenge.Context;
 using CRISP.BackendChallenge.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace CRISP.BackendChallenge.Repository;
 
@@ -19,31 +20,38 @@ public class ContextRepository : IRepository
     /// <inheritdoc />
     public IEnumerable<T> GetAll<T>() where T : class
     {
-        throw new NotImplementedException();
+        return _context.Set<T>().AsNoTracking();
     }
 
     /// <inheritdoc />
     public T GetById<T>(int id) where T : class
     {
-        throw new NotImplementedException();
+        DbSet<T> table = _context.Set<T>();
+        var result = table
+            .Find(id);
+
+        return result;
     }
 
     /// <inheritdoc />
     public void Add<T>(T entity) where T : class
     {
-        throw new NotImplementedException();
+        _context.Set<T>().Add(entity);
+        _context.SaveChanges();
     }
 
     /// <inheritdoc />
     public void Delete<T>(T entity) where T : class
     {
-        throw new NotImplementedException();
+        _context.Set<T>().Remove(entity);
+        _context.SaveChanges();
     }
 
     /// <inheritdoc />
     public void Update<T>(T entity) where T : class
     {
-        throw new NotImplementedException();
+        _context.Set<T>().Update(entity);
+        _context.SaveChanges();
     }
 
     /// <inheritdoc />
