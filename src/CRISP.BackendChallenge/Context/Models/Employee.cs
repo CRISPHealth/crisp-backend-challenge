@@ -6,18 +6,13 @@ namespace CRISP.BackendChallenge.Context.Models;
 /// <summary>
 /// Person Entity Model
 /// </summary>
-public class Employee
+public class Employee : BaseEntity
 {
     public Employee()
     {
         // ReSharper disable once VirtualMemberCallInConstructor
         Logins = new HashSet<Login>();
-    }
-
-    /// <summary>
-    /// Id of the person
-    /// </summary>
-    public int Id { get; set; }
+    }    
 
     /// <summary>
     /// Name of the person

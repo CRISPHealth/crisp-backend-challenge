@@ -1,49 +1,52 @@
-using System.Linq.Expressions;
-using CRISP.Backend.Challenge.Context;
+using CRISP.Backend.Challenge.Context.Models;
 using CRISP.BackendChallenge.Context;
+using CRISP.BackendChallenge.Context.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CRISP.BackendChallenge.Repository;
 
-public class ContextRepository : IRepository
+public class ContextRepository<T> : IRepository<T>  where T: BaseEntity
 {
     private readonly ApplicationDbContext _context;
+    private DbSet<T> entities;
 
     public ContextRepository(ApplicationDbContext context)
     {
         _context = context;
+        entities = context.Set<T>();
     }
 
-    public IQueryable<T> Query<T>() where T : class
+    public IQueryable<T> Query()
         => _context.Set<T>().AsQueryable();
 
     /// <inheritdoc />
-    public IEnumerable<T> GetAll<T>() where T : class
+    public IEnumerable<T> GetAll()
     {
         throw new NotImplementedException();
     }
 
     /// <inheritdoc />
-    public T GetById<T>(int id) where T : class
+    public T GetById(int id)
+    {
+        return entities.SingleOrDefault(e => e.Id == id);
+    }
+
+    /// <inheritdoc />
+    public void Add(T entity)
     {
         throw new NotImplementedException();
     }
 
     /// <inheritdoc />
-    public void Add<T>(T entity) where T : class
+    public void Delete(T entity)
     {
-        throw new NotImplementedException();
+        entities.Remove(entity);
     }
 
     /// <inheritdoc />
-    public void Delete<T>(T entity) where T : class
+    public void Update(T entity)
     {
-        throw new NotImplementedException();
-    }
-
-    /// <inheritdoc />
-    public void Update<T>(T entity) where T : class
-    {
-        throw new NotImplementedException();
+        entities.Update(entity);
     }
 
     /// <inheritdoc />
@@ -53,21 +56,21 @@ public class ContextRepository : IRepository
     }
 }
 
-public interface IRepository
+public interface IRepository<T> where T : BaseEntity
 {
     /// <summary>
     /// Generic method that will allow for more complex EF queries.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public IQueryable<T> Query<T>() where T : class;
+    public IQueryable<T> Query();
 
     /// <summary>
     /// Get All Entities available in the database.
     /// </summary>
     /// <typeparam name="T">The type of entity</typeparam>
     /// <returns>An enumerable of the Entity Type</returns>
-    IEnumerable<T> GetAll<T>() where T : class;
+    IEnumerable<T> GetAll();
 
     /// <summary>
     /// Get an instance of the Entity by Id.
@@ -75,28 +78,28 @@ public interface IRepository
     /// <param name="id"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    T GetById<T>(int id) where T : class;
+    T GetById(int id);
 
     /// <summary>
     /// Add an entity to the database.
     /// </summary>
     /// <param name="entity"></param>
     /// <typeparam name="T"></typeparam>
-    void Add<T>(T entity) where T : class;
+    void Add(T entity);
 
     /// <summary>
     /// Delete an entity from the database.
     /// </summary>
     /// <param name="entity"></param>
     /// <typeparam name="T"></typeparam>
-    void Delete<T>(T entity) where T : class;
+    void Delete(T entity);
 
     /// <summary>
     /// Update an entity in the database.
     /// </summary>
     /// <param name="entity"></param>
     /// <typeparam name="T"></typeparam>
-    void Update<T>(T entity) where T : class;
+    void Update(T entity);
 
     /// <summary>
     /// Save the changes to the database.

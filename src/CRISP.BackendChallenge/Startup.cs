@@ -22,7 +22,7 @@ public class Startup
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
         services.AddEntityFrameworkSqlite().AddDbContext<ApplicationDbContext>();
-        services.AddTransient<IRepository, ContextRepository>();
+        services.AddTransient(typeof(IRepository < >), typeof(ContextRepository< >));
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -30,7 +30,11 @@ public class Startup
         if (env.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Crisp Backend Challenge");
+                c.RoutePrefix = string.Empty;
+            });
         }
 
         app.UseRouting();
