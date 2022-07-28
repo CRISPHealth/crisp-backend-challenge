@@ -16,174 +16,179 @@ namespace CRISP.BackendChallenge.Controllers;
 [Route("[controller]")]
 public class EmployeeController : ControllerBase
 {
-	private readonly ILogger<EmployeeController> _logger;
-	private readonly IRepository _repository;
+    private readonly ILogger<EmployeeController> _logger;
+    private readonly IRepository _repository;
 
-	public EmployeeController(ILogger<EmployeeController> logger, IRepository repository)
-	{
-		_logger = logger;
-		_repository = repository;
-	}
+    public EmployeeController(ILogger<EmployeeController> logger, IRepository repository)
+    {
+        _logger = logger;
+        _repository = repository;
+    }
 
-	// POST: api/CreateEmployee
-	[HttpPost, Route("api/create")]
-	public async Task<ActionResult<Employee>> CreateEmployee(EmployeeDto employeeDTO)
-	{
-		var employee = new Employee
-		{
-			Name = employeeDTO.Name
-		};
+    // POST: api/CreateEmployee
+    [HttpPost, Route("api/create")]
+    public async Task<ActionResult<Employee>> CreateEmployee(EmployeeDto employeeDTO)
+    {
+        var employee = new Employee
+        {
+            Name = employeeDTO.Name
+        };
 
-		await _repository.Add<Employee>(employee);
+        await _repository.Add<Employee>(employee);
 
-		//return Ok(); //CreatedAtAction(nameof(GetById), new { id = employee.Id }, todoItem);
-		return CreatedAtAction("GetById", new {id = employee.Id}, employee.ConvertToEmployeeDto());
-	}
+        //return Ok(); //CreatedAtAction(nameof(GetById), new { id = employee.Id }, todoItem);
+        return CreatedAtAction("GetById", new {id = employee.Id}, employee.ConvertToEmployeeDto());
+    }
 
-	[HttpGet, Route("api/all")]
-	public IActionResult GetAll()
-	{
-		_logger.LogDebug(":: Performing {MethodName}", nameof(GetAll));
+    [HttpGet, Route("api/all")]
+    public IActionResult GetAll()
+    {
+        _logger.LogDebug(":: Performing {MethodName}", nameof(GetAll));
 
-		var result = _repository.Query<Employee>()
-			.Include(l => l.Logins.OrderBy(login => login.LoginDate)).ToList();
+        var result = _repository.Query<Employee>()
+            .Include(l => l.Logins.OrderBy(login => login.LoginDate)).ToList();
 
-		return Ok(result);
-	}
+        if (result.Count == 0)
+        {
+            return NoContent();
+        }
 
-	// GET: api/employee/id
-	[HttpGet("api/{id}")]
-	public ActionResult<Employee> GetById(int id)
-	{
-		_logger.LogDebug(":: Performing {MethodName}", nameof(GetById));
+        return Ok(result);
+    }
 
-		var employee = _repository.GetById<Employee>(id);
+    // GET: api/employee/id
+    [HttpGet("api/{id}")]
+    public ActionResult<Employee> GetById(int id)
+    {
+        _logger.LogDebug(":: Performing {MethodName}", nameof(GetById));
 
-		if (employee == null)
-		{
-			return NotFound();
-		}
+        var employee = _repository.GetById<Employee>(id);
 
-		var result = _repository.GetEmployeeWithLogins(id);
+        if (employee == null)
+        {
+            return NotFound();
+        }
 
-		return result;
-	}
+        var result = _repository.GetEmployeeWithLogins(id);
 
-	// DELETE: api/employee/id
-	[HttpDelete("api/delete/{id}")]
-	public async Task<IActionResult> DeleteEmployee(int id)
-	{
-		_logger.LogDebug(":: Performing {MethodName}", nameof(DeleteEmployee));
+        return result;
+    }
 
-		Employee existingEmployee = _repository.GetById<Employee>(id);
+    // DELETE: api/employee/id
+    [HttpDelete("api/delete/{id}")]
+    public async Task<IActionResult> DeleteEmployee(int id)
+    {
+        _logger.LogDebug(":: Performing {MethodName}", nameof(DeleteEmployee));
 
-		if (existingEmployee == null)
-		{
-			return NotFound();
-		}
+        Employee existingEmployee = _repository.GetById<Employee>(id);
 
-		await _repository.Delete<Employee>(existingEmployee);
+        if (existingEmployee == null)
+        {
+            return NotFound();
+        }
 
-		return NoContent();
-	}
+        await _repository.Delete<Employee>(existingEmployee);
 
-	// PUT: api/employee/id
-	[HttpPut("api/updatebyid/{id}")]
-	public async Task<IActionResult> UpdateById(int id, EmployeeUpdateRequest employeeDto)
-	{
-		_logger.LogDebug(":: Performing {MethodName}", nameof(UpdateById));
+        return NoContent();
+    }
 
-		var existingEmployee = _repository.GetById<Employee>(id);
+    // PUT: api/employee/id
+    [HttpPut("api/updatebyid/{id}")]
+    public async Task<IActionResult> UpdateById(int id, EmployeeUpdateRequest employeeDto)
+    {
+        _logger.LogDebug(":: Performing {MethodName}", nameof(UpdateById));
 
-		if (existingEmployee == null)
-		{
-			return NotFound();
-		}
+        var existingEmployee = _repository.GetById<Employee>(id);
 
-		existingEmployee.Name = employeeDto.Name;
+        if (existingEmployee == null)
+        {
+            return NotFound();
+        }
 
-		try
-		{
-			_repository.Save(existingEmployee);
-		}
-		catch (DbUpdateConcurrencyException) when (!EmployeeExists(id))
-		{
-			return NotFound();
-		}
+        existingEmployee.Name = employeeDto.Name;
 
-		return NoContent();
-	}
+        try
+        {
+            _repository.Save(existingEmployee);
+        }
+        catch (DbUpdateConcurrencyException) when (!EmployeeExists(id))
+        {
+            return NotFound();
+        }
 
-	// PUT: api/employee/name
-	[HttpPut("api/updatebyname/{name}")]
-	public async Task<IActionResult> UpdateByName(string name, EmployeeUpdateRequest employeeDto)
-	{
-		_logger.LogDebug(":: Performing {MethodName}", nameof(UpdateByName));
+        return NoContent();
+    }
 
-		if (string.IsNullOrWhiteSpace(employeeDto.Name))
-		{
-			return BadRequest("A valid name must be specified.");
-		}
+    // PUT: api/employee/name
+    [HttpPut("api/updatebyname/{name}")]
+    public async Task<IActionResult> UpdateByName(string name, EmployeeUpdateRequest employeeDto)
+    {
+        _logger.LogDebug(":: Performing {MethodName}", nameof(UpdateByName));
 
-		var result = _repository.Query<Employee>()
-			.Where(e => e.Name.Contains(name))
-			.FirstOrDefault();
+        if (string.IsNullOrWhiteSpace(employeeDto.Name))
+        {
+            return BadRequest("A valid name must be specified.");
+        }
 
-		if (result == null)
-		{
-			return NotFound();
-		}
+        var result = _repository.Query<Employee>()
+            .Where(e => e.Name.Contains(name))
+            .FirstOrDefault();
 
-		var existingEmployee = _repository.GetById<Employee>(result.Id);
+        if (result == null)
+        {
+            return NotFound();
+        }
 
-		// Assign the value to be updated
-		existingEmployee.Name = employeeDto.Name;
+        var existingEmployee = _repository.GetById<Employee>(result.Id);
 
-		try
-		{
-			_repository.Save(existingEmployee);
-		}
-		catch (DbUpdateConcurrencyException) when (!EmployeeExists(result.Id))
-		{
-			return NotFound();
-		}
+        // Assign the value to be updated
+        existingEmployee.Name = employeeDto.Name;
 
-		return NoContent();
-	}
+        try
+        {
+            _repository.Save(existingEmployee);
+        }
+        catch (DbUpdateConcurrencyException) when (!EmployeeExists(result.Id))
+        {
+            return NotFound();
+        }
 
-	[HttpGet("api/search")]
-	public async Task<ActionResult<IEnumerable<Employee>>> Search(int? id, string? name, Department? department)
-	{
-		if ((id == null) && (string.IsNullOrEmpty(name)) && (department == null))
-		{
-			return BadRequest("At least one search parameter must be present.");
-		}
+        return NoContent();
+    }
 
-		try
-		{
-			var result = await _repository.Search(id, name, department);
+    [HttpGet("api/search")]
+    public async Task<ActionResult<IEnumerable<Employee>>> Search(int? id, string? name, Department? department)
+    {
+        if ((id == null) && (string.IsNullOrEmpty(name)) && (department == null))
+        {
+            return BadRequest("At least one search parameter must be present.");
+        }
 
-			if (result.Any())
-			{
-				return Ok(result);
-			}
+        try
+        {
+            var result = await _repository.Search(id, name, department);
 
-			return NotFound();
-		}
-		catch (Exception)
-		{
-			return StatusCode(StatusCodes.Status500InternalServerError,
-				"Error retrieving data from the database");
-		}
-	}
+            if (result.Any())
+            {
+                return Ok(result);
+            }
 
-	/// <summary>
-	/// A private helper method to determine if an employee exists in the repository
-	/// </summary>
-	/// <param name="employeeId">The id of the employee to find</param>
-	/// <returns></returns>
-	private bool EmployeeExists(int employeeId)
-	{
-		return _repository.FindEmployee(employeeId);
-	}
+            return NotFound();
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error retrieving data from the database");
+        }
+    }
+
+    /// <summary>
+    /// A private helper method to determine if an employee exists in the repository
+    /// </summary>
+    /// <param name="employeeId">The id of the employee to find</param>
+    /// <returns></returns>
+    private bool EmployeeExists(int employeeId)
+    {
+        return _repository.FindEmployee(employeeId);
+    }
 }
