@@ -1,9 +1,9 @@
 namespace CRISP.BackendChallenge.DTO;
 
 /// <summary>
-/// Response for Person API
+/// Response for Employee API
 /// </summary>
-public class PersonResponse
+public class EmployeeResponse
 {
     /// <summary>
     /// Id of the person

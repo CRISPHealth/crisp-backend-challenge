@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CRISP.BackendChallenge.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220722183558_inital")]
+    [Migration("20220727165010_inital")]
     partial class inital
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,14 +25,11 @@ namespace CRISP.BackendChallenge.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("EmployeeId")
+                    b.Property<int>("EmployeeId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("LoginDate")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("PersonId")
-                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -44,38 +41,38 @@ namespace CRISP.BackendChallenge.Migrations
                         new
                         {
                             Id = 1,
-                            LoginDate = new DateTime(2022, 6, 22, 14, 35, 58, 191, DateTimeKind.Local).AddTicks(8767),
-                            PersonId = 1
+                            EmployeeId = 1,
+                            LoginDate = new DateTime(2022, 6, 27, 11, 50, 9, 891, DateTimeKind.Local).AddTicks(9477)
                         },
                         new
                         {
                             Id = 2,
-                            LoginDate = new DateTime(2022, 5, 22, 14, 35, 58, 191, DateTimeKind.Local).AddTicks(8810),
-                            PersonId = 1
+                            EmployeeId = 1,
+                            LoginDate = new DateTime(2022, 5, 27, 11, 50, 9, 891, DateTimeKind.Local).AddTicks(9514)
                         },
                         new
                         {
                             Id = 3,
-                            LoginDate = new DateTime(2022, 4, 22, 14, 35, 58, 191, DateTimeKind.Local).AddTicks(8813),
-                            PersonId = 1
+                            EmployeeId = 1,
+                            LoginDate = new DateTime(2022, 4, 27, 11, 50, 9, 891, DateTimeKind.Local).AddTicks(9516)
                         },
                         new
                         {
                             Id = 4,
-                            LoginDate = new DateTime(2022, 6, 22, 14, 35, 58, 191, DateTimeKind.Local).AddTicks(8816),
-                            PersonId = 2
+                            EmployeeId = 2,
+                            LoginDate = new DateTime(2022, 6, 27, 11, 50, 9, 891, DateTimeKind.Local).AddTicks(9519)
                         },
                         new
                         {
                             Id = 5,
-                            LoginDate = new DateTime(2022, 5, 22, 14, 35, 58, 191, DateTimeKind.Local).AddTicks(8819),
-                            PersonId = 2
+                            EmployeeId = 2,
+                            LoginDate = new DateTime(2022, 5, 27, 11, 50, 9, 891, DateTimeKind.Local).AddTicks(9521)
                         },
                         new
                         {
                             Id = 6,
-                            LoginDate = new DateTime(2022, 6, 22, 14, 35, 58, 191, DateTimeKind.Local).AddTicks(8822),
-                            PersonId = 3
+                            EmployeeId = 3,
+                            LoginDate = new DateTime(2022, 6, 27, 11, 50, 9, 891, DateTimeKind.Local).AddTicks(9523)
                         });
                 });
 
@@ -121,7 +118,9 @@ namespace CRISP.BackendChallenge.Migrations
                 {
                     b.HasOne("CRISP.BackendChallenge.Context.Models.Employee", null)
                         .WithMany("Logins")
-                        .HasForeignKey("EmployeeId");
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("CRISP.BackendChallenge.Context.Models.Employee", b =>

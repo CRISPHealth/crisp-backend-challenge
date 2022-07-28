@@ -5,6 +5,10 @@ using CRISP.BackendChallenge.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using CRISP.BackendChallenge.Context.Extensions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
+using SQLitePCL;
 
 namespace CRISP.BackendChallenge.Controllers;
 
@@ -12,113 +16,174 @@ namespace CRISP.BackendChallenge.Controllers;
 [Route("[controller]")]
 public class EmployeeController : ControllerBase
 {
-    private readonly ILogger<EmployeeController> _logger;
-    private readonly IRepository _repository;
+	private readonly ILogger<EmployeeController> _logger;
+	private readonly IRepository _repository;
 
-    public EmployeeController(ILogger<EmployeeController> logger, IRepository repository)
-    {
-        _logger = logger;
-        _repository = repository;
-    }
+	public EmployeeController(ILogger<EmployeeController> logger, IRepository repository)
+	{
+		_logger = logger;
+		_repository = repository;
+	}
 
-    [HttpGet]
-    public IActionResult GetAll()
-    {
-        _logger.LogDebug(":: Performing {MethodName}", nameof(GetAll));
+	// POST: api/CreateEmployee
+	[HttpPost, Route("api/create")]
+	public async Task<ActionResult<Employee>> CreateEmployee(EmployeeDto employeeDTO)
+	{
+		var employee = new Employee
+		{
+			Name = employeeDTO.Name
+		};
 
-        var result = _repository.Query<Employee>()
-            .ToList().Select(x => new PersonResponse
-            {
-                Id = x.Id,
-                Name = x.Name,
-                // TODO: Include the login date information...
-                LoginDates = null
-            });
+		await _repository.Add<Employee>(employee);
 
-        return Ok(result);
-    }
+		//return Ok(); //CreatedAtAction(nameof(GetById), new { id = employee.Id }, todoItem);
+		return CreatedAtAction("GetById", new {id = employee.Id}, employee.ConvertToEmployeeDto());
+	}
 
-    [HttpGet, Route("/{id:int}")]
-    public IActionResult GetById(int id)
-    {
-        _logger.LogDebug(":: Performing {MethodName}", nameof(GetById));
+	[HttpGet, Route("api/all")]
+	public IActionResult GetAll()
+	{
+		_logger.LogDebug(":: Performing {MethodName}", nameof(GetAll));
 
-        var result = _repository.GetById<Employee>(id);
+		var result = _repository.Query<Employee>()
+			.Include(l => l.Logins.OrderBy(login => login.LoginDate)).ToList();
 
-        if (result == null)
-        {
-            return BadRequest("Employee not found.");
-        }
+		return Ok(result);
+	}
 
-        return Ok(result);
-    }
+	// GET: api/employee/id
+	[HttpGet("api/{id}")]
+	public ActionResult<Employee> GetById(int id)
+	{
+		_logger.LogDebug(":: Performing {MethodName}", nameof(GetById));
 
-    [HttpPost, Route("delete/{id:int}")]
-    public IActionResult DeleteEmployee(int id)
-    {
-        try
-        {
-            var employee = _repository.GetById<Employee>(id);
+		var employee = _repository.GetById<Employee>(id);
 
-            _repository.Delete(employee);
-        }
-        catch (Exception)
-        {
-            return BadRequest();
-        }
+		if (employee == null)
+		{
+			return NotFound();
+		}
 
-        return Ok();
-    }
+		var result = _repository.GetEmployeeWithLogins(id);
 
-    [HttpPost]
-    [Route("UpdateById")]
-    public IActionResult UpdateById([FromBody] Employee model)
-    {
-        if (ModelState.IsValid)
-        {
-            try
-            {
-                _repository.Update(model);
+		return result;
+	}
 
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                if (ex.GetType().FullName == "Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException")
-                {
-                    return NotFound();
-                }
+	// DELETE: api/employee/id
+	[HttpDelete("api/delete/{id}")]
+	public async Task<IActionResult> DeleteEmployee(int id)
+	{
+		_logger.LogDebug(":: Performing {MethodName}", nameof(DeleteEmployee));
 
-                return BadRequest();
-            }
-        }
+		Employee existingEmployee = _repository.GetById<Employee>(id);
 
-        return Ok();
-    }
+		if (existingEmployee == null)
+		{
+			return NotFound();
+		}
 
-    [HttpPost]
-    [Route("UpdateByName")]
-    public IActionResult UpdateByName([FromBody] Employee model)
-    {
-        if (ModelState.IsValid)
-        {
-            try
-            {
-                _repository.Update(model);
+		await _repository.Delete<Employee>(existingEmployee);
 
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                if (ex.GetType().FullName == "Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException")
-                {
-                    return NotFound();
-                }
+		return NoContent();
+	}
 
-                return BadRequest();
-            }
-        }
+	// PUT: api/employee/id
+	[HttpPut("api/updatebyid/{id}")]
+	public async Task<IActionResult> UpdateById(int id, EmployeeUpdateRequest employeeDto)
+	{
+		_logger.LogDebug(":: Performing {MethodName}", nameof(UpdateById));
 
-        return Ok();
-    }
+		var existingEmployee = _repository.GetById<Employee>(id);
+
+		if (existingEmployee == null)
+		{
+			return NotFound();
+		}
+
+		existingEmployee.Name = employeeDto.Name;
+
+		try
+		{
+			_repository.Save(existingEmployee);
+		}
+		catch (DbUpdateConcurrencyException) when (!EmployeeExists(id))
+		{
+			return NotFound();
+		}
+
+		return NoContent();
+	}
+
+	// PUT: api/employee/name
+	[HttpPut("api/updatebyname/{name}")]
+	public async Task<IActionResult> UpdateByName(string name, EmployeeUpdateRequest employeeDto)
+	{
+		_logger.LogDebug(":: Performing {MethodName}", nameof(UpdateByName));
+
+		if (string.IsNullOrWhiteSpace(employeeDto.Name))
+		{
+			return BadRequest("A valid name must be specified.");
+		}
+
+		var result = _repository.Query<Employee>()
+			.Where(e => e.Name.Contains(name))
+			.FirstOrDefault();
+
+		if (result == null)
+		{
+			return NotFound();
+		}
+
+		var existingEmployee = _repository.GetById<Employee>(result.Id);
+
+		// Assign the value to be updated
+		existingEmployee.Name = employeeDto.Name;
+
+		try
+		{
+			_repository.Save(existingEmployee);
+		}
+		catch (DbUpdateConcurrencyException) when (!EmployeeExists(result.Id))
+		{
+			return NotFound();
+		}
+
+		return NoContent();
+	}
+
+	[HttpGet("api/search")]
+	public async Task<ActionResult<IEnumerable<Employee>>> Search(int? id, string? name, Department? department)
+	{
+		if ((id == null) && (string.IsNullOrEmpty(name)) && (department == null))
+		{
+			return BadRequest("At least one search parameter must be present.");
+		}
+
+		try
+		{
+			var result = await _repository.Search(id, name, department);
+
+			if (result.Any())
+			{
+				return Ok(result);
+			}
+
+			return NotFound();
+		}
+		catch (Exception)
+		{
+			return StatusCode(StatusCodes.Status500InternalServerError,
+				"Error retrieving data from the database");
+		}
+	}
+
+	/// <summary>
+	/// A private helper method to determine if an employee exists in the repository
+	/// </summary>
+	/// <param name="employeeId">The id of the employee to find</param>
+	/// <returns></returns>
+	private bool EmployeeExists(int employeeId)
+	{
+		return _repository.FindEmployee(employeeId);
+	}
 }

@@ -29,9 +29,8 @@ namespace CRISP.BackendChallenge.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    PersonId = table.Column<int>(type: "INTEGER", nullable: false),
-                    LoginDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    EmployeeId = table.Column<int>(type: "INTEGER", nullable: true)
+                    EmployeeId = table.Column<int>(type: "INTEGER", nullable: false),
+                    LoginDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -40,7 +39,8 @@ namespace CRISP.BackendChallenge.Migrations
                         name: "FK_Logins_Employees_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -60,33 +60,33 @@ namespace CRISP.BackendChallenge.Migrations
 
             migrationBuilder.InsertData(
                 table: "Logins",
-                columns: new[] { "Id", "EmployeeId", "LoginDate", "PersonId" },
-                values: new object[] { 1, null, new DateTime(2022, 6, 22, 14, 35, 58, 191, DateTimeKind.Local).AddTicks(8767), 1 });
+                columns: new[] { "Id", "EmployeeId", "LoginDate" },
+                values: new object[] { 1, 1, new DateTime(2022, 6, 27, 11, 50, 9, 891, DateTimeKind.Local).AddTicks(9477) });
 
             migrationBuilder.InsertData(
                 table: "Logins",
-                columns: new[] { "Id", "EmployeeId", "LoginDate", "PersonId" },
-                values: new object[] { 2, null, new DateTime(2022, 5, 22, 14, 35, 58, 191, DateTimeKind.Local).AddTicks(8810), 1 });
+                columns: new[] { "Id", "EmployeeId", "LoginDate" },
+                values: new object[] { 2, 1, new DateTime(2022, 5, 27, 11, 50, 9, 891, DateTimeKind.Local).AddTicks(9514) });
 
             migrationBuilder.InsertData(
                 table: "Logins",
-                columns: new[] { "Id", "EmployeeId", "LoginDate", "PersonId" },
-                values: new object[] { 3, null, new DateTime(2022, 4, 22, 14, 35, 58, 191, DateTimeKind.Local).AddTicks(8813), 1 });
+                columns: new[] { "Id", "EmployeeId", "LoginDate" },
+                values: new object[] { 3, 1, new DateTime(2022, 4, 27, 11, 50, 9, 891, DateTimeKind.Local).AddTicks(9516) });
 
             migrationBuilder.InsertData(
                 table: "Logins",
-                columns: new[] { "Id", "EmployeeId", "LoginDate", "PersonId" },
-                values: new object[] { 4, null, new DateTime(2022, 6, 22, 14, 35, 58, 191, DateTimeKind.Local).AddTicks(8816), 2 });
+                columns: new[] { "Id", "EmployeeId", "LoginDate" },
+                values: new object[] { 4, 2, new DateTime(2022, 6, 27, 11, 50, 9, 891, DateTimeKind.Local).AddTicks(9519) });
 
             migrationBuilder.InsertData(
                 table: "Logins",
-                columns: new[] { "Id", "EmployeeId", "LoginDate", "PersonId" },
-                values: new object[] { 5, null, new DateTime(2022, 5, 22, 14, 35, 58, 191, DateTimeKind.Local).AddTicks(8819), 2 });
+                columns: new[] { "Id", "EmployeeId", "LoginDate" },
+                values: new object[] { 5, 2, new DateTime(2022, 5, 27, 11, 50, 9, 891, DateTimeKind.Local).AddTicks(9521) });
 
             migrationBuilder.InsertData(
                 table: "Logins",
-                columns: new[] { "Id", "EmployeeId", "LoginDate", "PersonId" },
-                values: new object[] { 6, null, new DateTime(2022, 6, 22, 14, 35, 58, 191, DateTimeKind.Local).AddTicks(8822), 3 });
+                columns: new[] { "Id", "EmployeeId", "LoginDate" },
+                values: new object[] { 6, 3, new DateTime(2022, 6, 27, 11, 50, 9, 891, DateTimeKind.Local).AddTicks(9523) });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Logins_EmployeeId",

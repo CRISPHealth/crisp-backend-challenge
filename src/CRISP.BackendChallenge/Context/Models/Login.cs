@@ -11,9 +11,9 @@ public class Login
     public int Id { get; set; }
 
     /// <summary>
-    /// Id of <see cref="Person"/> entity associated with the Login
+    /// Id of <see cref="Employee"/> entity associated with the Login
     /// </summary>
-    public int PersonId { get; set; }
+    public int EmployeeId { get; set; }
 
     /// <summary>
     /// Login Date
