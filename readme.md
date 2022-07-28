@@ -2,7 +2,11 @@
 
 ## Prerequisites
 
-You will need to have git and [dotnet 6 SDK installed](https://dotnet.microsoft.com/en-us/download/dotnet/6.0). Note that this code will only run on net6 specifically.
+You will need to have git and [dotnet 6 SDK installed](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
+And ensure that you have an apporpriate eviroment to run on. For example, [VSCode2022](https://visualstudio.microsoft.com/vs/), visual studio code, or Rider.
+
+
+Note that this code will only run on net6 specifically.
 
 ## Background 
 The purpose of this challenge is to demonstrate one's ability to code up a REST API. The web-application can be started with:
@@ -17,13 +21,13 @@ Test out the server to make sure it works and think about how you might want to 
 
 ```curl
 curl -X 'GET' \
-  'https://localhost:7221/Employee' \
+  'https://localhost:YOURPORT/Employee' \
   -H 'accept: */*'
 ```
 or generally:
 ```http
 GET /Employee HTTP/1.1
-Host: localhost:7221
+Host: localhost:YOURPORT
 ```
 
 should return:
@@ -46,7 +50,7 @@ should return:
     }
 ]
 ```
-You may access the swagger endpoint: https://localhost:7221/swagger/index.html to explore the existing API. 
+You may access the swagger endpoint: https://localhost:YOURPORT/swagger/index.html to explore the existing API. 
 
 *NOTE*: The port may be different than 7221 depending on how you run the server.
 
