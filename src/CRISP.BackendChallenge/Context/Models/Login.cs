@@ -6,7 +6,7 @@ namespace CRISP.BackendChallenge.Context.Models;
 public class Login : BaseEntity
 {
     /// <summary>
-    /// Id of <see cref="Emplyoee"/> entity associated with the Login
+    /// Id of <see cref="Employee"/> entity associated with the Login
     /// </summary>
     public int EmployeeId { get; set; }
 

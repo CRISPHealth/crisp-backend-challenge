@@ -1,3 +1,5 @@
+using CRISP.BackendChallenge.Context.Models;
+
 namespace CRISP.BackendChallenge.Models;
 
 /// <summary>
@@ -14,6 +16,11 @@ public class EmployeeResponse
     /// Name of the person
     /// </summary>
     public string? Name { get; set; }
+
+    /// <summary>
+    /// Deparment of the person
+    /// </summary>
+    public Department Department { get; set; }
 
     /// <summary>
     /// Dates of the login for the person

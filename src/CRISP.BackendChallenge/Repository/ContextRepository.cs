@@ -1,5 +1,6 @@
 using CRISP.BackendChallenge.Context;
 using CRISP.BackendChallenge.Context.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CRISP.BackendChallenge.Repository;
 
@@ -14,7 +15,7 @@ public class ContextRepository<T> : IRepository<T> where T : BaseEntity
 
     public IQueryable<T> Query()
     {
-        return _context.Set<T>().AsQueryable();
+        return _context.Set<T>().AsQueryable().Include("Logins");
     }
 
     /// <inheritdoc />
@@ -26,30 +27,30 @@ public class ContextRepository<T> : IRepository<T> where T : BaseEntity
     /// <inheritdoc />
     public T GetById(int id)
     {
-        throw new NotImplementedException();
+        return Query().SingleOrDefault(t => t.Id == id);
     }
 
     /// <inheritdoc />
     public void Add(T entity)
     {
-        throw new NotImplementedException();
+        _context.Add(entity);
     }
 
     /// <inheritdoc />
     public void Delete(T entity)
     {
-        throw new NotImplementedException();
+        _context.Remove(entity);
     }
 
     /// <inheritdoc />
     public void Update(T entity)
     {
-        throw new NotImplementedException();
+        _context.Update(entity);
     }
 
     /// <inheritdoc />
     public void Save()
     {
-        throw new NotImplementedException();
+        _context.SaveChanges();
     }
 }
