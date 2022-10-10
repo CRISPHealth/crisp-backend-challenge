@@ -1,4 +1,4 @@
-﻿namespace CRISP.BackendChallenge.Context.Models
+﻿namespace CRISP.BackendChallenge.Data.Context.Models
 {
     /// <summary>
     /// Base entity for all models.

@@ -1,5 +1,5 @@
-using CRISP.BackendChallenge.Context;
-using CRISP.BackendChallenge.Repository;
+using CRISP.BackendChallenge.Data.Context;
+using CRISP.BackendChallenge.Data.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRISP.BackendChallenge;
@@ -37,7 +37,7 @@ public class Startup
         {
             endpoints.MapControllerRoute(
                 name: "default",
-                pattern: "{controller}/{action=Index}/{id?}");
+                pattern: "{controller}");
         });
 
         using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>()?.CreateScope();

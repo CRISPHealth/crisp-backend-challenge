@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace CRISP.BackendChallenge.Migrations
+namespace CRISP.BackendChallenge.Data.Migrations
 {
     public partial class Inital : Migration
     {

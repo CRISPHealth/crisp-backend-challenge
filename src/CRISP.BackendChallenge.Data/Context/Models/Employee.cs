@@ -1,4 +1,4 @@
-namespace CRISP.BackendChallenge.Context.Models;
+namespace CRISP.BackendChallenge.Data.Context.Models;
 
 
 /// <summary>
@@ -6,7 +6,9 @@ namespace CRISP.BackendChallenge.Context.Models;
 /// </summary>
 public class Employee : BaseEntity
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public Employee()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     {
         // ReSharper disable once VirtualMemberCallInConstructor
         Logins = new HashSet<Login>();

@@ -1,6 +1,6 @@
-﻿using CRISP.BackendChallenge.Context.Models;
+﻿using CRISP.BackendChallenge.Data.Context.Models;
 
-namespace CRISP.BackendChallenge.Repository
+namespace CRISP.BackendChallenge.Data.Repository
 {
     /// <summary>
     /// Interface for the repository.

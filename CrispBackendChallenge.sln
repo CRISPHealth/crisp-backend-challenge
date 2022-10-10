@@ -1,8 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRISP.BackendChallenge", "src\CRISP.BackendChallenge\CRISP.BackendChallenge.csproj", "{7E59CE39-C182-438E-8EEC-622054BD5241}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32526.322
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRISP.BackendChallenge", "src\CRISP.BackendChallenge\CRISP.BackendChallenge.csproj", "{7E59CE39-C182-438E-8EEC-622054BD5241}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRISP.BackendChallenge.Test", "test\CRISP.BackendChallenge.Test\CRISP.BackendChallenge.Test.csproj", "{4A34EB80-73AC-4443-82A5-CCC49F99F826}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRISP.BackendChallenge.Test", "test\CRISP.BackendChallenge.Test\CRISP.BackendChallenge.Test.csproj", "{4A34EB80-73AC-4443-82A5-CCC49F99F826}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRISP.BackendChallenge.Data", "src\CRISP.BackendChallenge.Data\CRISP.BackendChallenge.Data.csproj", "{4C2084BC-304D-451E-832A-ADE3FBCF2378}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +23,15 @@ Global
 		{4A34EB80-73AC-4443-82A5-CCC49F99F826}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A34EB80-73AC-4443-82A5-CCC49F99F826}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A34EB80-73AC-4443-82A5-CCC49F99F826}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C2084BC-304D-451E-832A-ADE3FBCF2378}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C2084BC-304D-451E-832A-ADE3FBCF2378}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C2084BC-304D-451E-832A-ADE3FBCF2378}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C2084BC-304D-451E-832A-ADE3FBCF2378}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D04C592F-19FD-4C78-A7F5-7FA44BD313CA}
 	EndGlobalSection
 EndGlobal
