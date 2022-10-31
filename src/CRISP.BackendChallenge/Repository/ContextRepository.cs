@@ -32,24 +32,48 @@ public class ContextRepository<T> : IRepository<T> where T : BaseEntity
     /// <inheritdoc />
     public void Add(T entity)
     {
-        throw new NotImplementedException();
+        if (entity != null)
+        {
+            _context.Add(entity);
+            Save();
+        }  
+        else
+        {
+            throw new ArgumentNullException("Entity was null.");
+        }
     }
 
     /// <inheritdoc />
     public void Delete(T entity)
-    {
-        throw new NotImplementedException();
+    {    
+        if (entity != null)
+        {
+            _context.Remove(entity);
+            Save();
+        }
+        else
+        {
+            throw new ArgumentNullException("Entity was null.");
+        }
     }
 
     /// <inheritdoc />
     public void Update(T entity)
-    {
-        throw new NotImplementedException();
+    {        
+        if (entity != null)
+        {
+            _context.Update(entity);
+            Save();
+        }
+        else
+        {
+            throw new ArgumentNullException("Entity was null.");
+        }
     }
 
     /// <inheritdoc />
     public void Save()
     {
-        throw new NotImplementedException();
+        _context.SaveChanges();
     }
 }
