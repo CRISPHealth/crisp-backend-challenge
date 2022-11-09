@@ -41,12 +41,11 @@ public class EmployeeController : ControllerBase
         var result =
             (from r in _repository.Query()
              where
-                (!id.HasValue || r.Id == id.Value)
-             &&
-             (string.IsNullOrWhiteSpace(name) || r.Name == name)
-             &&
-             (!department.HasValue || r.Department == department.Value)
-
+                (!id.HasValue || r.Id == id.Value) &&
+                (string.IsNullOrWhiteSpace(name) || r.Name == name) &&
+                (!department.HasValue || r.Department == department.Value)
+             orderby (from d in r.Logins
+                      select d.LoginDate).Max() descending
              select new EmployeeResponse()
              {
                  Id = r.Id,
