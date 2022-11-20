@@ -26,30 +26,34 @@ public class ContextRepository<T> : IRepository<T> where T : BaseEntity
     /// <inheritdoc />
     public T GetById(int id)
     {
-        throw new NotImplementedException();
+        return _context.Find<T>(id);
+        //throw new NotImplementedException();
     }
 
     /// <inheritdoc />
     public void Add(T entity)
     {
-        throw new NotImplementedException();
+        _context.Add<T>(entity);
+        //throw new NotImplementedException();
     }
 
     /// <inheritdoc />
     public void Delete(T entity)
     {
-        throw new NotImplementedException();
+        _context.Remove<T>(entity);
+        //throw new NotImplementedException();
     }
 
     /// <inheritdoc />
     public void Update(T entity)
     {
-        throw new NotImplementedException();
+        _context.Update<T>(entity);
+        //throw new NotImplementedException();
     }
 
     /// <inheritdoc />
     public void Save()
     {
-        throw new NotImplementedException();
+        _context.SaveChanges();
     }
 }
